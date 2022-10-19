@@ -1,0 +1,54 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Movie Game APP ",
+    "description": "Avalie qual fileme é o mais bem ranqueado, está preparado?\n"
+  },
+  "host": "localhost:8080",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/login-autentica": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "É necessário estar autenticado `Authenticated`"
+          },
+          "403": {
+            "description": "Você precisa de permissões para ter acesso a este recurso!"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "É necessário estar autenticado `Authenticated`"
+          },
+          "403": {
+            "description": "Você precisa de permissões para ter acesso a este recurso!"
+          }
+        }
+      }
+    }
+  }
+}

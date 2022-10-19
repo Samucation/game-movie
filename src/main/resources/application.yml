@@ -1,0 +1,36 @@
+app:
+  name: Movie Game APP
+  title: Sistema de avaliação de filmes.
+  api:
+    obdb-configuration:
+      requestUrl: http://www.omdbapi.com/?apikey=%s&t=%s&plot=full
+    swagger:
+      base-package: com.sam.systems.seller.registration
+      swagger-auth:
+        api-key:
+          name: JWT
+          key-name: Authorization
+          pass: header
+        default-auth:
+          authorization-scope: global
+          authorization-description: accessEverything
+          security-reference: JWT
+          enable: true
+    jwt-configuration:
+      token-password: 90f7bb4a-8ce3-4242-bae0-412d716302e0
+      token-expiration: 600_0000
+      whitelist:
+       - /v2/api-docs
+       - /swagger-resources
+       - /swagger-resources/**
+       - /configuration/ui
+       - /configuration/security
+       - /swagger-ui.html
+       - /webjars/**
+       - /v3/api-docs/**
+       - /swagger-ui/**
+       - /index.html
+       - swagger-ui/index.html
+       - /static/swagger/apis/api1/swagger.yaml
+       - /swagger-ui/#
+       - /swagger.json
