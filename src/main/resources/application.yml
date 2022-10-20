@@ -4,6 +4,7 @@ app:
   api:
     obdb-configuration:
       requestUrl: http://www.omdbapi.com/?apikey=%s&t=%s&plot=full
+      tokenKey: 73b70a4f
     swagger:
       base-package: com.sam.systems.seller.registration
       swagger-auth:

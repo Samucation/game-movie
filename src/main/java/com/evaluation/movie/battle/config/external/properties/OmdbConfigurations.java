@@ -10,9 +10,11 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class OmdbConfigurations {
 
     private String requestUrl;
+    private String tokenKey;
 
-    public OmdbConfigurations(String requestUrl){
+    public OmdbConfigurations(String requestUrl, String tokenKey){
         this.requestUrl = requestUrl;
+        this.tokenKey = tokenKey;
     }
 
 }

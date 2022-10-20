@@ -3,6 +3,7 @@ package com.evaluation.movie.battle.dto;
 import com.evaluation.movie.battle.model.Rating;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 @Getter
@@ -28,7 +29,7 @@ public class OmdbMovieDTO {
     public String poster;
     public ArrayList<Rating> ratings;
     public String metascore;
-    public String imdbRating;
+    public BigDecimal imdbRating;
     public String imdbVotes;
     public String imdbID;
     public String type;
@@ -37,5 +38,6 @@ public class OmdbMovieDTO {
     public String production;
     public String website;
     public String response;
+    public BigDecimal gameRanking;
 
 }
