@@ -2,7 +2,7 @@ package com.evaluation.movie.battle.service;
 
 import com.evaluation.movie.battle.config.external.properties.OmdbConfigurations;
 import com.evaluation.movie.battle.dto.OmdbMovieDTO;
-import com.evaluation.movie.battle.mapper.OmdbMovieMapper;
+import com.evaluation.movie.battle.builder.OmdbMovieMapper;
 import com.evaluation.movie.battle.model.OmdbMovie;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,3 +26,4 @@ public class OmdbRequestExecutor {
     }
 
 }
+

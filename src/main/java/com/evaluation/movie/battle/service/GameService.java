@@ -1,6 +1,14 @@
 package com.evaluation.movie.battle.service;
 
-import com.evaluation.movie.battle.dto.OmdbMovieDTO;
+import com.evaluation.movie.battle.builder.GameMathMapper;
+import com.evaluation.movie.battle.builder.MovieGameMapper;
+import com.evaluation.movie.battle.builder.UserMapper;
+import com.evaluation.movie.battle.dto.*;
+import com.evaluation.movie.battle.repository.GameMatchRepository;
+import com.evaluation.movie.battle.repository.GameRepository;
+import com.evaluation.movie.battle.repository.MovieRepository;
+import com.evaluation.movie.battle.repository.UserRepository;
+import com.evaluation.movie.battle.util.CalculateUtils;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -8,10 +16,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -19,39 +27,53 @@ public class GameService {
 
     private final Logger LOGGER = LogManager.getLogger(GameService.class);
     private final OmdbRequestExecutor omdbRequestExecutor;
+    private final GameRepository gameRepository;
+    private final MovieRepository movieRepository;
+    private final GameMatchRepository gameMatchRepository;
+    private final UserRepository userRepository;
+    private final MovieGameMapper movieGameMapper;
+    private final GameMathMapper gameMathMapper;
+    private final UserMapper userMapper;
+    private final CalculateUtils calculateUtils;
 
-    //TODO Ajustar esse método que não está funcionando corretamente.
-    public <T> boolean existRepeatedMovie(List<String> movieTileList) {
-        return movieTileList.stream().allMatch(new HashSet<>()::add);
+    public void saveGameMath(GameMatchDTO gameMatchDTO){
+        gameRepository.save(gameMathMapper.convert(gameMatchDTO));
+    }
+
+    public void saveMovies(MovieDTO movieDTO){
+        movieRepository.save(movieGameMapper.convert(movieDTO));
+    }
+
+    public List<UserDTO> showBestUserScore(){
+        List<UserDTO> userDTOList = userMapper.convertDTOList(userRepository.listUserByHiScoreAsc());
+        return userDTOList;
+    }
+
+    public MovieStatusDTO ValidationMovieNameRepeated(List<String> movieTileList) {
+        AtomicReference<Boolean> result = new AtomicReference<>();
+        List<String> repeatedMovies = new ArrayList<>();
+        Map<String, Long> moviesForQuantity = movieTileList.stream().collect(
+                Collectors.groupingBy(item -> item.toUpperCase(Locale.ROOT), Collectors.counting()));
+
+        moviesForQuantity.forEach((movieName, qtd) -> {
+            if(qtd > 1) {
+                repeatedMovies.add(movieName);
+                result.set(Boolean.TRUE);
+            }
+        });
+        return new MovieStatusDTO(repeatedMovies, result.get());
     }
 
     public BigDecimal calculateGameRanking(OmdbMovieDTO omdbMovieDTO) throws ParseException {
-        BigDecimal imdbVotes = stringValueToBigDecimal(omdbMovieDTO.getImdbVotes());
+        BigDecimal imdbVotes = calculateUtils.removeNumberFormattingIssues(omdbMovieDTO.getImdbVotes());
         BigDecimal imdbRating = omdbMovieDTO.getImdbRating();
         BigDecimal gameScoreForGame = imdbRating.multiply(imdbVotes);
         return gameScoreForGame;
     }
 
-    private BigDecimal stringValueToBigDecimal(String numberValue) throws ParseException {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator(',');
-        symbols.setDecimalSeparator('.');
-        String pattern = "#,##0.0#";
-        DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
-        decimalFormat.setParseBigDecimal(true);
-
-        BigDecimal parsedStringValue = (BigDecimal) decimalFormat.parse(numberValue);
-        return parsedStringValue;
-    }
-
     public OmdbMovieDTO getMovieWithTheHighestScore(List<String> movieTileList) throws ParseException {
-        if(existRepeatedMovie(movieTileList)){
-            LOGGER.debug("Filme repetido");
-        }
-
         List<OmdbMovieDTO> omdbMovieDTOList = new ArrayList<>();
         for(String currentMovie: movieTileList){
-
             if(StringUtils.isNoneBlank(currentMovie)) {
                 OmdbMovieDTO omdbMovieDTO = omdbRequestExecutor.getMovie(currentMovie);
                 omdbMovieDTO.setGameRanking(new BigDecimal(String.valueOf(calculateGameRanking(omdbMovieDTO))));

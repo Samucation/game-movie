@@ -1,12 +1,14 @@
-package com.evaluation.movie.battle.mapper;
+package com.evaluation.movie.battle.builder;
 
 import com.evaluation.movie.battle.dto.MovieDTO;
 import com.evaluation.movie.battle.model.Movie;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class MovieGameMapper {
 
     private ModelMapper modelMapper = new ModelMapper();

@@ -4,6 +4,7 @@ import com.evaluation.movie.battle.config.external.properties.JwtConfigurations;
 import com.evaluation.movie.battle.config.external.properties.OmdbConfigurations;
 import com.evaluation.movie.battle.dto.GameStartDTO;
 import com.evaluation.movie.battle.dto.OmdbMovieDTO;
+import com.evaluation.movie.battle.dto.UserDTO;
 import com.evaluation.movie.battle.service.GameService;
 import com.evaluation.movie.battle.service.OmdbRequestExecutor;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -40,6 +42,11 @@ public class GameMovieController {
     @GetMapping("get-omdb-movies-game")
     public OmdbMovieDTO getCloudMoviesGame(@Param("title") GameStartDTO gameStartDTO) throws ParseException {
         return gameService.getMovieWithTheHighestScore(gameStartDTO.getMovieTitleList());
+    }
+
+    @GetMapping("show-best-scores")
+    public List<UserDTO> getBestUserScores() throws ParseException {
+        return gameService.showBestUserScore();
     }
 
 }

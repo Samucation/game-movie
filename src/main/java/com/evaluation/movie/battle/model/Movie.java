@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @Builder
@@ -22,8 +22,21 @@ public class Movie {
     @Column(name = "id_movie", nullable = false)
     private Long id;
 
+    @Column(name="tx_name")
     private String name;
-    private String discription;
-    private BigDecimal score;
+
+    @Column(name="tx_description")
+    private String description;
+
+    @Column(name="dt_create")
+    private Date createDate;
+
+    @Column(name="dt_updated")
+    private Date updatedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_match_id")
+    private GameMatch gameMatch;
+
 
 }

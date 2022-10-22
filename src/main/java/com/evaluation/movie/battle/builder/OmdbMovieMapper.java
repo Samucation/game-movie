@@ -1,4 +1,4 @@
-package com.evaluation.movie.battle.mapper;
+package com.evaluation.movie.battle.builder;
 
 import com.evaluation.movie.battle.dto.OmdbMovieDTO;
 import com.evaluation.movie.battle.model.OmdbMovie;
