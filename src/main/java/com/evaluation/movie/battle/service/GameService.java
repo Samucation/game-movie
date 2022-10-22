@@ -28,8 +28,8 @@ public class GameService {
     private final Logger LOGGER = LogManager.getLogger(GameService.class);
     private final OmdbRequestExecutor omdbRequestExecutor;
     private final GameRepository gameRepository;
-    private final MovieRepository movieRepository;
     private final GameMatchRepository gameMatchRepository;
+    private final MovieRepository movieRepository;
     private final UserRepository userRepository;
     private final MovieGameMapper movieGameMapper;
     private final GameMathMapper gameMathMapper;
@@ -49,7 +49,15 @@ public class GameService {
         return userDTOList;
     }
 
-    public MovieStatusDTO ValidationMovieNameRepeated(List<String> movieTileList) {
+    public GameMatchDTO findActiveGameMatchByUser(UserDTO userDTO){
+       return gameMathMapper.convert(gameMatchRepository.findActiveGameMatchByUser(userMapper.convert(userDTO)));
+    }
+
+    public void deleteGameMatch(GameMatchDTO gameMatchDTO){
+        gameMatchRepository.delete(gameMathMapper.convert(gameMatchDTO));
+    }
+
+    public MovieStatusDTO validationMovieNameRepeated(List<String> movieTileList) {
         AtomicReference<Boolean> result = new AtomicReference<>();
         List<String> repeatedMovies = new ArrayList<>();
         Map<String, Long> moviesForQuantity = movieTileList.stream().collect(

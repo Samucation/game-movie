@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Setter
 @Getter
@@ -25,7 +25,7 @@ public class GameMatch {
     private Integer gameScore;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "gameMatch")
-    private Set<Movie> moviesNames;
+    private List<Movie> moviesNames;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
