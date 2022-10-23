@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -12,7 +14,7 @@ import lombok.Setter;
 public class GameStatusDTO {
 
     private String gameStatus;
-
-    private GameMatchDTO gameMatchDTO;
+    private List<GameMatchDTO> gameMatchDTOList;
+    private Integer score;
 
 }

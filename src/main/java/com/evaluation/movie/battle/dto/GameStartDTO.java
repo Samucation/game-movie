@@ -12,6 +12,7 @@ import java.util.List;
 public class GameStartDTO {
 
     private UserDTO userDTO;
+    private String hiScoreMovieName;
     private List<String> movieTitleList;
 
 }

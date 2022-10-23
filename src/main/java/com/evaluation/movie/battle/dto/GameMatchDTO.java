@@ -22,6 +22,8 @@ public class GameMatchDTO {
 
     private Integer gameScore;
 
+    private Integer gameStage;
+
     private List<Movie> moviesNames;
 
     private User user;

@@ -25,7 +25,7 @@ class GameMovieApplicationTests {
 		movieTileList.add("Titanic");
 		movieTileList.add("titanic");
 
-		MovieStatusDTO movieStatusDTO = gameService.validationMovieNameRepeated(movieTileList);
+		MovieStatusDTO movieStatusDTO = gameService.showRepeatedMoviesIfExist(movieTileList);
 
 		assertEquals(movieStatusDTO.getIsFailValidation(), Boolean.TRUE);
 

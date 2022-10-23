@@ -2,6 +2,8 @@ app:
   name: Movie Game APP
   title: Sistema de avaliação de filmes.
   api:
+    game-match-configuration:
+      numberOfAttempts: 3
     obdb-configuration:
       requestUrl: http://www.omdbapi.com/?apikey=%s&t=%s&plot=full
       tokenKey: 73b70a4f

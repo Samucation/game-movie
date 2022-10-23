@@ -24,6 +24,9 @@ public class GameMatch {
     @Column(name="nr_game_score")
     private Integer gameScore;
 
+    @Column(name="nr_game_stage")
+    private Integer gameStage;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "gameMatch")
     private List<Movie> moviesNames;
 

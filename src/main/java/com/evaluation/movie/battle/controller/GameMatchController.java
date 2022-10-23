@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @AllArgsConstructor
 @RestController
 public class GameMatchController {
@@ -24,7 +22,7 @@ public class GameMatchController {
     @ApiOperation(value = "Inicializa o jogo, passe até dois filmes para começar!")
     @PostMapping(path = "start-game", produces = MediaType.APPLICATION_JSON_VALUE)
     public GameStatusDTO startGame(@RequestBody() GameStartDTO gameStartDTO){
-        return gameMatchService.startGame(gameStartDTO.getUserDTO(), gameStartDTO.getMovieTitleList());
+        return gameMatchService.startGame(gameStartDTO.getUserDTO(), gameStartDTO.getMovieTitleList(), gameStartDTO.getHiScoreMovieName());
     }
 
     @RequestBody
@@ -36,9 +34,16 @@ public class GameMatchController {
 
     @RequestBody
     @ApiOperation(value = "Mostra os melhores resultados do maior para o menor!")
-    @GetMapping(path = "show-hi-scores", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDTO> showHiScores(){
-        return gameMatchService.showHiScoreGames();
+    @GetMapping(path = "show-hi-score-by-user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer showHiScoreByUser(@RequestBody() UserDTO userDTO){
+        return gameMatchService.showHiScoreByUser(userDTO);
+    }
+
+    @RequestBody
+    @ApiOperation(value = "Mostra os melhores resultados do maior para o menor!")
+    @GetMapping(path = "show-all-hi-scores", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer showAllHiScores(){
+        return null;
     }
 
     @RequestBody

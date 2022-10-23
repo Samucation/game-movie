@@ -36,35 +36,51 @@ public class GameService {
     private final UserMapper userMapper;
     private final CalculateUtils calculateUtils;
 
-    public void saveGameMath(GameMatchDTO gameMatchDTO){
+    public void saveGameMath(GameMatchDTO gameMatchDTO) {
         gameRepository.save(gameMathMapper.convert(gameMatchDTO));
     }
 
-    public void saveMovies(MovieDTO movieDTO){
+    public void saveMovies(MovieDTO movieDTO) {
         movieRepository.save(movieGameMapper.convert(movieDTO));
     }
 
-    public List<UserDTO> showBestUserScore(){
+    public List<UserDTO> showBestUserScore() {
         List<UserDTO> userDTOList = userMapper.convertDTOList(userRepository.listUserByHiScoreAsc());
         return userDTOList;
     }
 
-    public GameMatchDTO findActiveGameMatchByUser(UserDTO userDTO){
-       return gameMathMapper.convert(gameMatchRepository.findActiveGameMatchByUser(userMapper.convert(userDTO)));
+    public UserDTO findUser(UserDTO userDTO){
+        return userMapper.convert(userRepository.findUser(userMapper.convert(userDTO)));
     }
 
-    public void deleteGameMatch(GameMatchDTO gameMatchDTO){
-        gameMatchRepository.delete(gameMathMapper.convert(gameMatchDTO));
+    public List<GameMatchDTO> findActiveGameMatchByUser(UserDTO userDTO) {
+        return gameMathMapper.convertDTOList(gameMatchRepository.findActiveGameMatchByUser(userMapper.convert(userDTO)));
     }
 
-    public MovieStatusDTO validationMovieNameRepeated(List<String> movieTileList) {
+    public Integer countGameMatcherActivesByUser(UserDTO userDTO) {
+        return gameMatchRepository.countGameMatcherActivesByUser(userMapper.convert(userDTO));
+    }
+
+    public Integer sumScoresByAllActiveGameMatches(UserDTO userDTO) {
+        return gameMatchRepository.sumScoresByAllActiveGameMatches(userMapper.convert(userDTO));
+    }
+
+    public Integer sumHiScoreByUser(UserDTO userDTO) {
+        return gameMatchRepository.sumHiScoreByUser(userMapper.convert(userDTO));
+    }
+
+    public void deleteAllActivesGameMatches(List<GameMatchDTO> gameMatchDTOList) {
+        gameMatchRepository.deleteAll(gameMathMapper.convertEntityList(gameMatchDTOList));
+    }
+
+    public MovieStatusDTO showRepeatedMoviesIfExist(List<String> movieTileList) {
         AtomicReference<Boolean> result = new AtomicReference<>();
         List<String> repeatedMovies = new ArrayList<>();
         Map<String, Long> moviesForQuantity = movieTileList.stream().collect(
                 Collectors.groupingBy(item -> item.toUpperCase(Locale.ROOT), Collectors.counting()));
 
         moviesForQuantity.forEach((movieName, qtd) -> {
-            if(qtd > 1) {
+            if (qtd > 1) {
                 repeatedMovies.add(movieName);
                 result.set(Boolean.TRUE);
             }
@@ -81,8 +97,8 @@ public class GameService {
 
     public OmdbMovieDTO getMovieWithTheHighestScore(List<String> movieTileList) throws ParseException {
         List<OmdbMovieDTO> omdbMovieDTOList = new ArrayList<>();
-        for(String currentMovie: movieTileList){
-            if(StringUtils.isNoneBlank(currentMovie)) {
+        for (String currentMovie : movieTileList) {
+            if (StringUtils.isNoneBlank(currentMovie)) {
                 OmdbMovieDTO omdbMovieDTO = omdbRequestExecutor.getMovie(currentMovie);
                 omdbMovieDTO.setGameRanking(new BigDecimal(String.valueOf(calculateGameRanking(omdbMovieDTO))));
                 omdbMovieDTOList.add(omdbMovieDTO);
