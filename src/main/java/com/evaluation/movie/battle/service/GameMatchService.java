@@ -98,6 +98,8 @@ public class GameMatchService {
         if (activeGameMatchers == numberAttemptsAllowed) {
             gameStatusDTO.setGameStatus("O jogo chegou ao fim! os resultados podem ser conferidos a seguir!");
             gameStatusDTO.setScore(gameService.sumScoresByAllActiveGameMatches(currentUserDB));
+            List<GameMatchDTO> gameMatchDTOList = gameService.findActiveGameMatchByUser(currentUserDB); //TODO Inserir lógica abaixo para mudar o status dos matches para matchEnded = true
+
             return gameStatusDTO;
         }
         return gameStatusDTO;
