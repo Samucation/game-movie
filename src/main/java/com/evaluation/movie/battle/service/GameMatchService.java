@@ -3,6 +3,7 @@ package com.evaluation.movie.battle.service;
 import com.evaluation.movie.battle.builder.UserMapper;
 import com.evaluation.movie.battle.config.external.properties.GameMathConfiguration;
 import com.evaluation.movie.battle.dto.*;
+import com.evaluation.movie.battle.indicator.MessageValidation;
 import com.evaluation.movie.battle.model.Movie;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,18 +35,17 @@ public class GameMatchService {
         Integer numberAttemptsAllowed = Integer.parseInt(gameMathConfiguration.getNumberOfAttempts());
 
         if ((currentGameStage) > (numberAttemptsAllowed)) {
-            gameStatusDTO.setGameStatus("O número de estagios atuais excede o permitido pelo jogo! número de estagios atual: " + currentGameStage +
-                    " número permitido: " + numberAttemptsAllowed + " Encerre o jogo para iniciar uma nova partida.");
+            gameStatusDTO.setGameStatus(MessageValidation.TYPES.exceededNumberOfMovies(currentGameStage, numberAttemptsAllowed));
             gameStatusDTO.setGameMatchDTOList(gameMatchDTOIntoDataBase);
             return gameStatusDTO;
         }
 
         if (movieStatusDTO.getIsFailValidation()) {
-            gameStatusDTO.setGameStatus("Existem filmes repetidos, tente novammente, filme repetido: " + movieStatusDTO.getRepeatedMovies());
+            gameStatusDTO.setGameStatus(MessageValidation.TYPES.repeatedMovies(movieStatusDTO.getRepeatedMovies()));
             return gameStatusDTO;
         }
 
-        gameStatusDTO.setGameStatus("Stagio atual do jogo: " + currentGameStage + " número máximo de stagios atuais configurados: " + numberAttemptsAllowed);
+        gameStatusDTO.setGameStatus(MessageValidation.TYPES.currentGameMatchStatus(currentGameStage, numberAttemptsAllowed));
         gameMatchDTO.setGameStage(currentGameStage);
         gameMatchDTOIntoDataBase.add(gameMatchDTO);
 
@@ -90,13 +90,12 @@ public class GameMatchService {
         GameStatusDTO gameStatusDTO = new GameStatusDTO();
 
         if (activeGameMatchers < numberAttemptsAllowed) {
-            gameStatusDTO.setGameStatus("O jogo ainda não chegou ao fim! continue jogando até chegar ao fim do jogo! estagio atual: " + activeGameMatchers + " " +
-                                        "de estagios necessários para encerrar a partida: " + numberAttemptsAllowed);
+            gameStatusDTO.setGameStatus(MessageValidation.TYPES.theGameIsNotOverYet(activeGameMatchers, numberAttemptsAllowed));
             return gameStatusDTO;
         }
 
         if (activeGameMatchers == numberAttemptsAllowed) {
-            gameStatusDTO.setGameStatus("O jogo chegou ao fim! os resultados podem ser conferidos a seguir!");
+            gameStatusDTO.setGameStatus(MessageValidation.TYPES.theGameHasComeToAnEnd());
             gameStatusDTO.setScore(gameService.sumScoresByAllActiveGameMatches(currentUserDB));
             List<GameMatchDTO> gameMatchDTOList = gameService.findActiveGameMatchByUser(currentUserDB); //TODO Inserir lógica abaixo para mudar o status dos matches para matchEnded = true
 
@@ -109,7 +108,7 @@ public class GameMatchService {
         UserDTO currentUserDB = gameService.findUser(userDTO);
         List<GameMatchDTO> gameMatchDTOList = gameService.findActiveGameMatchByUser(currentUserDB);
         gameService.deleteAllActivesGameMatches(gameMatchDTOList);
-        return new GameStatusDTO("O jogo foi encerrado antes de chegar ao fim! todos os pontos da partida atual foram perdidos.", null, 0);
+        return new GameStatusDTO(MessageValidation.TYPES.theGameWasEndedBeforeReachingTheEnd(), null, 0);
     }
 
     public Integer showHiScoreByUser(UserDTO userDTO) {
